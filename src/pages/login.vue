@@ -25,7 +25,13 @@
           </el-form-item>
 
           <el-form-item prop="password">
-            <el-input v-model="form.password" placeholder="请输入密码" type="password" show-password>
+            <el-input
+              v-model="form.password"
+              placeholder="请输入密码"
+              type="password" show-password
+              @keyup.enter="onSubmit"
+            >
+            <!-- 插槽插入图标 -->
               <template #prefix>
                 <el-icon>
                   <Lock />
@@ -45,11 +51,13 @@
 
 import { reactive, ref } from 'vue'
 import { User, Lock } from '@element-plus/icons-vue'
-import { login, getinfo } from '../api/manager'
-import { ElMessage } from 'element-plus'
+import { getinfo, login, } from '../api/manager'
 import { useRouter } from 'vue-router'
-import { useCookies } from '@vueuse/integrations/useCookies'
+import { setToken } from '../componsable/auth'
+import { toast } from '../componsable/utils'
+import { useStore } from 'vuex'
 
+const store = useStore()
 const router = useRouter()
 
 // do not use same name with ref
@@ -96,16 +104,12 @@ const onSubmit = () => {
     login(form.username, form.password).then(res => {
       // console.log(res);
       // 1.提示用户登录成功
-      ElMessage({
-        showClose: true,
-        message: '登录成功',
-        type: 'success',
-      })
+      toast('登录成功', 'success')
       // 2.获取用户相关信息 存储token
-      const cooike = useCookies()
-      cooike.set("admin-token", res.token)
-      // 获取用户相关信息
+      setToken(res.token)
+      // 获取用户相关信息 直接使用mutation，并获取数据存在store中
       getinfo().then(res2 => {
+        store.commit("SET_USERINFO", res2)
         console.log(res2);
       })
       // 3. 跳转到首页
@@ -115,6 +119,8 @@ const onSubmit = () => {
     })
   })
 }
+
+//
 
 </script>
 

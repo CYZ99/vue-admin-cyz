@@ -7,7 +7,11 @@ export function login(username, password) {
     password
   })
 }
-
+// 获取用户信息
 export function getinfo() {
   return axios.post("/admin/getinfo")
+}
+// 退出登录
+export function logout() {
+  return axios.post("/admin/logout")
 }
