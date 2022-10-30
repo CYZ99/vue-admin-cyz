@@ -7,8 +7,9 @@
         </el-icon>
         后台系统
       </span>
-      <el-icon class="icon-btn">
-        <Fold />
+      <el-icon class="icon-btn" @click="$store.commit('handleAsideWidth')">
+        <Fold v-if="$store.state.asideWidth == '250px'"/>
+        <Expand v-else/>
       </el-icon>
       <el-tooltip effect="dark" content="刷新" placement="bottom">
         <el-icon class="icon-btn" @click="handleRefresh">
@@ -41,7 +42,8 @@
         </template>
       </el-dropdown>
       <!-- 修改密码 -->
-      <el-drawer v-model="showDrawer" title="修改密码">
+      <!-- 使用封装的抽屉组件 -->
+      <from-drawer ref="fromDrawerRef" title="修改密码" @submit="onSubmit">
         <el-form ref="formRef" :model="form" :rules="rules">
           <el-form-item prop="oldPassword" label="旧密码" label-width="80px">
             <el-input v-model="form.oldpassword" placeholder="请输入旧密码"></el-input>
@@ -53,86 +55,33 @@
             <el-input v-model="form.repassword" placeholder="请输入确认密码" type="password" show-password @keyup.enter="onSubmit">
             </el-input>
           </el-form-item>
-          <el-form-item>
-            <el-button type="primary" :loading="loading" @click="onSubmit">提交</el-button>
-          </el-form-item>
         </el-form>
-      </el-drawer>
+      </from-drawer>
     </div>
 
   </div>
 </template>
 
 <script setup>
-import { showModel, toast } from '../../componsable/utils'
-import { logout, updatePassword } from '../../api/manager'
-import { useRouter } from 'vue-router'
-import { useStore } from 'vuex'
 import { useFullscreen } from '@vueuse/core'
-import { ref,reactive } from 'vue'
+import FromDrawer from '../../components/FromDrawer.vue'
+import { useRePassword, useLogout } from '../../componsable/useRePassword'
 const { isFullscreen, toggle } = useFullscreen()
-
-const router = useRouter()
-const store = useStore()
 
 // 处理刷新
 const handleRefresh = () => location.reload()
 
-// 修改密码
-const showDrawer = ref(false)
-const form = reactive({
-  oldpassword: '',
-  password: '',
-  repassword: ''
-})
-// 拿到form表单的节点
-const formRef = ref(null)
-const loading = ref(null)
-const rules = {
-  // 表单验证规则
-  oldpassword: [
-    {
-      required: true,
-      message: '密码不能为空',
-      trigger: 'blur'
-    }
-  ],
-  password: [
-    {
-      required: true,
-      message: '新密码不能为空',
-      trigger: 'blur'
-    },
-  ],
-  repassword: [
-    {
-      required: true,
-      message: '确认密码不能为空',
-      trigger: 'blur'
-    },
-  ]
-}
+const {
+  form,
+  formRef,
+  rules,
+  onSubmit,
+  fromDrawerRef
+} = useRePassword()
 
-const onSubmit = () => {
-  formRef.value.validate((valid) => {
-    if (!valid) {
-      return false
-    }
-    loading.value = true;
-    updatePassword(form).then(res => {
-      // 清除token 和用户内容
-      store.dispatch("logout")
-      toast("修改密码成功, 请重新登录", "success")
-      router.push("/login")
-    }).finally(() => {
-      loading.value = false;
-    })
+const { handleLogout } = useLogout()
 
-  })
-}
-
-
-
+// 判断是退出登录还是修改密码
 function handleCommand(c) {
   switch (c) {
     case "logout":
@@ -140,23 +89,11 @@ function handleCommand(c) {
       break;
 
     case "rePassword":
-      showDrawer.value = true
+      fromDrawerRef.value.open()
       break;
   }
 }
-// 处理下拉菜单的退出登录
-function handleLogout() {
-  showModel("是否要退出登录").then(res => {
-    logout().finally(() => {
-      // 清除token 和用户内容
-      store.dispatch("logout")
-      // 跳转回到登录页
-      router.push("/login")
-      // 提示退出登录成功
-      toast("退出登录成功", "success")
-    })
-  })
-}
+
 </script>
 
 <style scoped>

@@ -5,11 +5,12 @@
         <c-header></c-header>
       </el-header>
       <el-container>
-        <el-aside>
-          <c-aside></c-aside>
+        <el-aside :width="$store.state.asideWidth">
+          <c-aside ></c-aside>
         </el-aside>
         <el-main>
           <c-tag-list></c-tag-list>
+          <!-- 子路由的内容渲染到这里 -->
           <router-view></router-view>
         </el-main>
       </el-container>
@@ -25,4 +26,7 @@ import CTagList from './components/CTagList.vue'
 </script>
 
 <style  scoped>
+.el-aside{
+  transition: all 0.5s;
+}
 </style>
