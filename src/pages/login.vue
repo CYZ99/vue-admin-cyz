@@ -50,7 +50,6 @@
 <script setup>
 
 import { reactive, ref } from 'vue'
-import { User, Lock } from '@element-plus/icons-vue'
 import { getinfo, login, } from '../api/manager'
 import { useRouter } from 'vue-router'
 import { setToken } from '../componsable/auth'
