@@ -2,7 +2,7 @@ import axios from 'axios'
 import { toast } from './componsable/utils'
 import { getToken } from './componsable/auth'
 import store from './store'
-import router from './router/index'
+import { router } from './router/index'
 // 创建一个axios的实例
 const service = axios.create({
   baseURL: '/api',

@@ -1,7 +1,6 @@
 <template>
   <div class="aside" :style="{width: $store.state.asideWidth}">
     <el-menu
-
       :default-active="defaultActive"
       class="border-0"
       @select="handleSelect"
@@ -55,26 +54,7 @@ const isCollapse = computed(() => {
 
 
 // 模拟菜单列表的数据
-const asideMenu = [{
-  "name": '后台面板',
-  "icon": 'help',
-  "child": [{
-    "name": "主控台",
-    "icon": "home-filled",
-    "frontpath":"/"
-  }],
-}, {
-    "name": '商城管理',
-    "icon": 'shopping-bag',
-    "child": [{
-      "name": "商品管理",
-      "icon": "shopping-cart-full",
-      "frontpath": "/goods/list",
-    }],
-  },{
-    "name": '列表管理',
-    "icon": 'shopping-bag',
-  }]
+const asideMenu = computed(() => store.state.menus)
 
 // 选中跳转到对应的路由
 const handleSelect = (e) => {
@@ -94,5 +74,9 @@ const handleSelect = (e) => {
   overflow-y: auto;
   overflow-x: hidden;
   @apply shadow-md bg-light-50;
+}
+
+.aside::-webkit-scrollbar{
+  width: 0;
 }
 </style>

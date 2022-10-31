@@ -7,10 +7,12 @@
         </el-icon>
         后台系统
       </span>
+      <!-- 侧边按钮 -->
       <el-icon class="icon-btn" @click="$store.commit('handleAsideWidth')">
         <Fold v-if="$store.state.asideWidth == '250px'"/>
         <Expand v-else/>
       </el-icon>
+      <!-- 刷新按钮 -->
       <el-tooltip effect="dark" content="刷新" placement="bottom">
         <el-icon class="icon-btn" @click="handleRefresh">
           <Refresh />
@@ -19,6 +21,7 @@
     </div>
 
     <div class="ml-auto flex justify-center items-center">
+      <!-- 全屏按钮 -->
       <el-tooltip effect="dark" content="全屏"  placement="bottom">
         <el-icon class="icon-btn" @click="toggle">
           <FullScreen v-if="!isFullscreen"/>

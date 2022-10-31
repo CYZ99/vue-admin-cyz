@@ -11,7 +11,13 @@
         <el-main>
           <c-tag-list></c-tag-list>
           <!-- 子路由的内容渲染到这里 -->
-          <router-view></router-view>
+          <router-view v-slot="{ Component }">
+            <transition name="fade" >
+              <keep-alive :max="10">
+                <component :is="Component"></component>
+              </keep-alive>
+            </transition>
+          </router-view>
         </el-main>
       </el-container>
 
@@ -28,5 +34,29 @@ import CTagList from './components/CTagList.vue'
 <style  scoped>
 .el-aside{
   transition: all 0.5s;
+}
+.fade-enter-from{
+  opacity: 0;
+  transform: translate3d(0, -100%, 0);
+}
+
+.fade-enter-to {
+  opacity: 1;
+}
+
+.fade-leave-from{
+  opacity: 1;
+}
+
+.fade-leave-to{
+  opacity: 0;
+  transform: translate3d(0, 100%, 0);
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s ease;
+}
+.fade-enter-active{
+  transition-delay: 0.5s;
 }
 </style>
