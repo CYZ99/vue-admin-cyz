@@ -50,6 +50,7 @@ const {
   right: 0;
   z-index: 100;
   height: 44px;
+  transition: all 0.5s;
 }
 
 .tag-list .tab{
